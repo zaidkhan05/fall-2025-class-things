@@ -1,33 +1,40 @@
-// ---- TCPClient.java ----
-import java.io.*;
 import java.net.*;
+import java.io.*;
+import java.util.Scanner;
 
 public class TCPClient {
-    public static void main(String[] args) {
-        String serverName = "localhost"; // or IP address
-        int port = 6789;
-
-        try (Socket clientSocket = new Socket(serverName, port);
-             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-             BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in))) {
-
-            System.out.println("Connected to server at " + serverName + ":" + port);
-            System.out.println("Type 'exit' to quit.");
-
-            String sentence;
-            while (true) {
-                System.out.print("Client> ");
-                sentence = inFromUser.readLine();
-
-                if (sentence == null || sentence.equalsIgnoreCase("exit")) {
-                    System.out.println("Closing connection...");
-                    break;
-                }
-
-                outToServer.writeBytes(sentence + '\n');
+	public static void main (String args[]) {
+		// arguments supply message and hostname
+		Socket s = null;
+		try{
+			int serverPort = 7896;
+			s = new Socket(/*args[1]*/"localhost", serverPort);    
+            Scanner sc = new Scanner(System.in);
+			DataInputStream in = new DataInputStream( s.getInputStream());
+			DataOutputStream out =new DataOutputStream( s.getOutputStream());
+			// out.writeUTF(args[0]);      	// UTF is a string encoding see Sn. 4.4
+			// String data = in.readUTF();	    // read a line of data from the stream
+			// System.out.println("Received: "+ data) ; 
+            while(true){
+                String message = sc.nextLine();
+                out.writeUTF(message);
+                String data = in.readUTF();
+                System.out.println("Received: "+ data);
             }
-        } catch (IOException e) {
-            System.err.println("Client error: " + e.getMessage());
+		}
+        catch (UnknownHostException e){
+            System.out.println("Socket:"+e.getMessage());
+		}
+        catch (EOFException e){
+            System.out.println("EOF:"+e.getMessage());
+		}
+        catch (IOException e){
+            System.out.println("readline:"+e.getMessage());
+		}
+        finally {
+            if(s!=null) try {s.close();}catch (IOException e){
+                System.out.println("close:"+e.getMessage());
+            }
         }
-    }
+     }
 }
