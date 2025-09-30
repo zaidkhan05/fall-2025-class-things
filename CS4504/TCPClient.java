@@ -19,7 +19,7 @@ public class TCPClient {
                 String message = sc.nextLine();
                 out.writeUTF(message);
                 String data = in.readUTF();
-                System.out.println("Received: "+ data);
+                System.out.println("Received: "+ data); 
             }
 		}
         catch (UnknownHostException e){
