@@ -9,11 +9,10 @@ public class TCPServer {
 				Socket clientSocket = listenSocket.accept();
 				Connection c = new Connection(clientSocket);
 			}
-		} 
-        catch(IOException e) {
-            System.out.println("Listen socket:"+e.getMessage());
-	    }
-    }
+			
+		} catch(IOException e) {System.out.println("Listen socket:"+e.getMessage());}
+		
+	}
 }
 class Connection extends Thread {
 	DataInputStream in;
@@ -26,31 +25,28 @@ class Connection extends Thread {
 			out =new DataOutputStream( clientSocket.getOutputStream());
 			this.start();
 		}
-        catch(IOException e) {
-            System.out.println("Connection:"+e.getMessage());
-        }
+		catch(IOException e){
+			System.out.println("Connection:"+e.getMessage());
+		}
 	}
 	public void run(){
 		try {			                 // an echo server
-
 			String data = in.readUTF();	                  // read a line of data from the stream
 			out.writeUTF(data);
 		}
-        catch (EOFException e){
-            System.out.println("EOF:"+e.getMessage());
+		catch (EOFException e){
+			System.out.println("EOF:"+e.getMessage());
 		}
-        catch(IOException e) {
-            System.out.println("readline:"+e.getMessage());
+		catch(IOException e) {
+			System.out.println("readline:"+e.getMessage());
 		}
-        finally{
-            try {
-                clientSocket.close();
-            }
-            catch (IOException e){
-                /*close failed*/
-            }
-        }
-		
-
+		finally{
+			try{
+				clientSocket.close();
+			}
+			catch (IOException e){
+				/*close failed*/
+			}
+		}
 	}
 }
