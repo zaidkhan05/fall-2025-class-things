@@ -1,0 +1,27 @@
+Loading datasets...
+Total samples: 180000
+Training samples: 80000
+Testing samples: 100000
+
+===== TF-IDF Model =====
+Accuracy: 0.8783
+Training time: 0.12s | Inference time: 0.00s
+Confusion Matrix:
+ [[43689  6302]
+ [ 5872 44137]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0     0.8815    0.8739    0.8777     49991
+           1     0.8751    0.8826    0.8788     50009
+
+    accuracy                         0.8783    100000
+   macro avg     0.8783    0.8783    0.8783    100000
+weighted avg     0.8783    0.8783    0.8783    100000
+
+
+===== SUMMARY =====
+TF-IDF Accuracy:       0.8783
+
+Results saved in 'results_log.txt'.
