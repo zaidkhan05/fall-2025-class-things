@@ -1,52 +1,50 @@
-// ---- /src/ElectionServer.java ----
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.*;
+import java.rmi.server.*;
+import java.rmi.registry.*;
 
-public class electionserver extends UnicastRemoteObject implements remoteinterface {
 
-    private int candidate1Votes;
-    private int candidate2Votes;
+class Elect extends UnicastRemoteObject implements ElectionInterface {
+    int candidate1Votes = 0;
+    int candidate2Votes = 0;
 
-    protected electionserver() throws RemoteException {
+    Elect() throws RemoteException {
         super();
-        candidate1Votes = 0;
-        candidate2Votes = 0;
     }
 
     @Override
-    public synchronized void castVote(String candidateName) throws RemoteException {
+    public void castVote(String candidateName) throws RemoteException {
+        // Implementation here
         if (candidateName.equalsIgnoreCase("Zaid")) {
             candidate1Votes++;
-            System.out.println("Vote cast for Zaid");
-        } else if (candidateName.equalsIgnoreCase("Fred")) {
+            System.out.println("Vote number " + candidate1Votes + " cast for Zaid.");
+        }
+        else if (candidateName.equalsIgnoreCase("Fred")) {
             candidate2Votes++;
-            System.out.println("Vote cast for Fred");
-        } else {
+            System.out.println("Vote number " + candidate2Votes + " cast for Fred.");
+        }
+        else {
             System.out.println("Invalid candidate: " + candidateName);
         }
     }
 
     @Override
-    public synchronized int[] getResult() throws RemoteException {
+    public int[] getResult() throws RemoteException {
         return new int[]{candidate1Votes, candidate2Votes};
+
     }
+}
 
+
+public class ElectionServer {
     public static void main(String[] args) {
-        try {
-            // Create and export the remote object
-            electionserver server = new electionserver();
-
-            // Create RMI registry on port 1099 if not already running
-            Registry registry = LocateRegistry.createRegistry(1099);
-
-            // Bind the remote object to a name
-            registry.rebind("ElectionService", server);
-
-            System.out.println("Election server is ready!");
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        try{
+            Elect server = new Elect();
+            LocateRegistry.createRegistry(1900);
+            Naming.rebind("rmi://localhost:1900/ElectionService", server);
+            System.out.println("Election Server is ready.");
+        }
+        catch (Exception e) {
+            System.out.println("Election Server failed: " + e);
         }
     }
 }

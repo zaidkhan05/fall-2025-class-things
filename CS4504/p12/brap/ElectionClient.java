@@ -1,13 +1,19 @@
-import java.rmi.*;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
+
 public class ElectionClient {
     public static void main(String[] args) {
-        String host = "localhost";
-        int port = 1900;
-        try{
-            ElectionInterface electionStub = (ElectionInterface)Naming.lookup("rmi://" + host + ":" + port + "/ElectionService");
-            System.out.println("Welcome to the Distributed Election System!");
+        try {
+            // Connect to the RMI registry on the server
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+
+            // Lookup the remote object
+            RemoteInterface stub = (RemoteInterface) registry.lookup("ElectionService");
+
             Scanner scanner = new Scanner(System.in);
+            System.out.println("Welcome to the Distributed Election System!");
             while (true) {
                 System.out.println("\nOptions:");
                 System.out.println("1. Cast Vote");
@@ -21,16 +27,12 @@ public class ElectionClient {
                     case 1:
                         System.out.print("Enter candidate name (Zaid/Fred): ");
                         String name = scanner.nextLine();
-                        electionStub.castVote(name);
-                        if (name.equalsIgnoreCase("Zaid") || name.equalsIgnoreCase("Fred")) {
-                            System.out.println("Vote submitted successfully!");
-                        } else {
-                            System.out.println("Invalid candidate name. Vote not submitted.");
-                        }
+                        stub.castVote(name);
+                        System.out.println("Vote submitted successfully!");
                         break;
 
                     case 2:
-                        int[] results = electionStub.getResult();
+                        int[] results = stub.getResult();
                         System.out.println("\nCurrent Results:");
                         System.out.println("Zaid: " + results[0]);
                         System.out.println("Fred: " + results[1]);
@@ -45,9 +47,8 @@ public class ElectionClient {
                         System.out.println("Invalid choice!");
                 }
             }
-        }
-        catch (Exception e) {
-            System.out.println("Election Client failed: " + e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

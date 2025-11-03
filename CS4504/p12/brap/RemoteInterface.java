@@ -1,7 +1,8 @@
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface remoteinterface extends Remote {
+public interface RemoteInterface extends Remote {
     // Cast a vote for the given candidate name
     void castVote(String candidateName) throws RemoteException;
 
