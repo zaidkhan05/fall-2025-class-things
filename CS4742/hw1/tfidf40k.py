@@ -34,7 +34,6 @@ print(f"Total samples loaded: {len(df)}")
 # Shuffle the rows randomly so training/testing split is random every time
 df = df.sample(frac=1).reset_index(drop=True)
 
-
 # Split into training and testing
 train_df = df.iloc[:trainlines].copy()
 test_df = df.iloc[trainlines:].copy()
