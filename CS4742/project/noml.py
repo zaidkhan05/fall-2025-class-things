@@ -2,6 +2,7 @@
 import spacy
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
+import pandas as pd
 
 # load spaCy model
 nlp = spacy.load("en_core_web_sm")
@@ -86,8 +87,15 @@ def classify(score):
 # MAIN TEST FUNCTION
 # ---------------------------------
 if __name__ == "__main__":
-    headline = input("\nEnter headline:\n> ")
-    body = input("\nPaste article body:\n> ")
+    df = pd.read_csv("news.csv")
+    sample = df.sample(n=1, random_state=None).iloc[0]
+    h = str(sample["title"]) if "title" in df.columns else str(sample.iloc[0])
+    b = str(sample["body"]) if "body" in df.columns else str(sample.iloc[1])
+    print(f"Headline: {h}")
+    print(f"Body: {b[:200]}..." if len(b) > 200 else f"Body: {b}")
+    print()
+    headline = h
+    body = b
 
     results = combined_score(headline, body)
 

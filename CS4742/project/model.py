@@ -15,11 +15,13 @@ nlp = spacy.load("en_core_web_sm")
 # TEXT PREPROCESSING
 # -------------------------------
 def preprocess(text):
+    text = str(text) if text else ""
     doc = nlp(text.lower())
     return [t.lemma_ for t in doc if t.is_alpha and not t.is_stop]
 
 
 def extract_entities(text):
+    text = str(text) if text else ""
     doc = nlp(text)
     return [ent.text.lower() for ent in doc.ents]
 
@@ -37,9 +39,11 @@ def entity_overlap(headline, body):
 
 
 def cosine_tfidf(h, b):
+    h = str(h) if h else ""
+    b = str(b) if b else ""
     vec = TfidfVectorizer()
     tfidf = vec.fit_transform([h, b])
-    return (tfidf[0] @ tfidf[1].T).A[0][0]
+    return (tfidf[0] @ tfidf[1].T).toarray()[0][0]
 
 
 # -------------------------------
@@ -92,6 +96,13 @@ if __name__ == "__main__":
     # TEMP: random labels until you annotate
     df["label"] = np.random.randint(0, 2, df.shape[0])
 
+    # Use only a portion of the data for faster processing
+    SAMPLE_SIZE = 3000  # Adjust this number as needed
+    if len(df) > SAMPLE_SIZE:
+        df = df.sample(n=SAMPLE_SIZE, random_state=42).reset_index(drop=True)
+        print(f"Using {SAMPLE_SIZE} samples from dataset")
+    
+    print("Extracting features...")
     X = extract_features(df)
     y = df["label"].values.astype(np.float32).reshape(-1, 1)
 
