@@ -6,7 +6,7 @@ public class OpinionClient {
         int port = 1900;
         try{
             OpinionInterface opinionStub = (OpinionInterface)Naming.lookup("rmi://" + host + ":" + port + "/OpinionService");
-            System.out.println("Welcome to the Distributed Election System!");
+            System.out.println("Welcome to the Opinion Voting System!");
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 System.out.println("\nOptions:");
